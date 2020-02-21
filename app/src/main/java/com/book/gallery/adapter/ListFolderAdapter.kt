@@ -1,25 +1,25 @@
 package com.book.gallery.adapter
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.media.ThumbnailUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.book.gallery.ui.GalleryActivity
 import com.book.gallery.R
 import com.book.gallery.model.Folder
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.adapter_list_folder.view.*
-import java.io.File
 
 class ListFolderAdapter(private val context: Context,
                         private val folders: ArrayList<Folder>):
     RecyclerView.Adapter<ListFolderAdapter.ViewHolder>(){
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
+        var rootView: ConstraintLayout = view.layoutView
         var thumbnailView: ImageView = view.thumbnailView
         var folderNameView: TextView = view.folderNameView
         var totalView: TextView = view.totalView
@@ -42,5 +42,8 @@ class ListFolderAdapter(private val context: Context,
         }
         holder.folderNameView.text = folder.name
         holder.totalView.text = folder.imagesUri.size.toString()
+        holder.rootView.setOnClickListener {
+            (context as GalleryActivity).showImageByFolder(folder)
+        }
     }
 }

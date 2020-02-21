@@ -10,6 +10,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.book.gallery.Extension.widthScreen
+import com.book.gallery.ui.GalleryActivity
 import com.book.gallery.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.adapter_image.view.*
@@ -17,8 +18,8 @@ import kotlinx.android.synthetic.main.adapter_image.view.*
 class ImageAdapter(private val context: Context,
                    private val images: ArrayList<Uri>):
     BaseAdapter(){
-    private val counterSelected = hashMapOf<Int, Int>()
-    private var counter = 0
+    val counterSelected = hashMapOf<Int, Int>()
+    var counter = 0
     private var width = (context as Activity).widthScreen / 3
 
     override fun getView(position: Int, converView: View?, parent: ViewGroup?): View {
@@ -36,7 +37,6 @@ class ImageAdapter(private val context: Context,
         }
         if(counterSelected[position] != null){
             viewHolder.counterView?.visibility = View.VISIBLE
-            viewHolder.counterView?.text = counterSelected[position]?.toString()
         }else
             viewHolder.counterView?.visibility = View.GONE
         Picasso.get().load(images[position]).resize(width, width).centerCrop().into(viewHolder.imageView)
@@ -46,11 +46,13 @@ class ImageAdapter(private val context: Context,
                 counter--
                 counterSelected.remove(position)
             }else{
-                viewHolder.counterView?.visibility = View.VISIBLE
-                counter++
-                counterSelected[position] = counter
-                viewHolder.counterView?.text = counter.toString()
+                if(counterSelected.size < 10) {
+                    viewHolder.counterView?.visibility = View.VISIBLE
+                    counter++
+                    counterSelected[position] = counter
+                }
             }
+            (context as GalleryActivity).showFooter(counterSelected)
         }
         return view
     }

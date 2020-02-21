@@ -1,4 +1,4 @@
-package com.book.gallery
+package com.book.gallery.ui
 
 import android.Manifest
 import android.app.Activity
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.app.ActivityCompat
+import com.book.gallery.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 

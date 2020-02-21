@@ -1,16 +1,19 @@
-package com.book.gallery
+package com.book.gallery.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.book.gallery.R
 import com.book.gallery.adapter.ImageAdapter
 import com.book.gallery.adapter.ListFolderAdapter
 import com.book.gallery.model.Folder
+import com.book.gallery.model.SelectedImages
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : Activity(),
@@ -20,6 +23,7 @@ View.OnClickListener{
     private var folders = arrayListOf<Folder>()
     private lateinit var folderAdapter: ListFolderAdapter
     private lateinit var imageAdapter: ImageAdapter
+    private lateinit var selectedImages: SelectedImages
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,21 +41,49 @@ View.OnClickListener{
         folderNameView.setOnClickListener(this)
 
         loadFolder()
-        loadImagesView()
+        showImageByFolder(folders[0])
     }
 
-    private fun loadImagesView() {
+    fun showFooter(positions: HashMap<Int, Int> ){
+        if(positions.size > 0){
+            btnSave.visibility = View.VISIBLE
+            footer.visibility = View.VISIBLE
+            totalSelectedView.text = "(${positions.size}/10)"
+            val imagesUri = arrayListOf<Uri>()
+            for (position in positions.keys){
+                imagesUri.add(images[position])
+            }
+            selectedImages = SelectedImages(imagesUri)
+        }else{
+            footer.visibility = View.GONE
+            btnSave.visibility = View.GONE
+        }
+    }
+
+    fun showImageByFolder(folder: Folder) {
+        images.clear()
+        images.addAll(folder.imagesUri)
+        imageAdapter.counterSelected.clear()
+        imageAdapter.counter = 0
         imageAdapter.notifyDataSetChanged()
+        this.gridView.visibility = View.VISIBLE
+        this.listFolder.visibility = View.GONE
+        this.folderNameView.text = folder.name
+        this.footer.visibility = View.GONE
     }
 
     private fun loadFolder() {
+        val allImages = arrayListOf<Uri>()
         val folders = arrayListOf<Folder>()
         val listFolder = getListFolderFromDevice()
         for (folderName in listFolder){
-            val folder = Folder(folderName, getImagesByFolderDevice(folderName))
+            val imagesFolder = getImagesByFolderDevice(folderName)
+            val folder = Folder(folderName, imagesFolder)
             folders.add(folder)
+            allImages.addAll(imagesFolder)
         }
-        folders.add(0, Folder("All Images", this.images))
+        folders.sortWith(compareBy {it.name})
+        folders.add(0, Folder("All Images", allImages))
         this.folders.addAll(folders)
     }
 
@@ -60,14 +92,21 @@ View.OnClickListener{
         this.gridView.visibility = View.GONE
         this.listFolder.visibility = View.VISIBLE
         this.folderNameView.text = "Folder"
+        this.btnSave.visibility = View.GONE
     }
 
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.btnBack -> onBackPressed()
-            R.id.btnSave -> {}
+            R.id.btnSave -> saveSelectedImage()
             R.id.folderNameView -> {showFoldersView()}
         }
+    }
+
+    private fun saveSelectedImage() {
+        val intent = Intent(this, SelectedImageActivity::class.java)
+        intent.putExtra("imagesUri", selectedImages)
+        startActivity(intent)
     }
 
     @SuppressLint("Recycle")
@@ -111,7 +150,6 @@ View.OnClickListener{
             }
             it.close()
         }
-        this.images.addAll(listOfAllImages)
         return listOfAllImages
     }
 }

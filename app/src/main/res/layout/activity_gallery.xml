@@ -3,23 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GalleryActivity">
+    tools:context=".ui.GalleryActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/colorPrimary">
-        <TextView
+        <Button
             android:id="@+id/folderNameView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="17sp"
             android:text="All Images"
+            android:drawableEnd="@drawable/ic_downarrow_dark"
+            android:drawableTint="@color/white"
+            android:drawablePadding="10dp"
+            android:background="@drawable/background_transparent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +40,7 @@
             app:layout_constraintTop_toTopOf="parent" />
         <TextView
             android:id="@+id/btnSave"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"

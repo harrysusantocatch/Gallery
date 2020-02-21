@@ -17,7 +17,7 @@
         android:id="@+id/counterView"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:text="10"
+        android:text="✓"
         android:textSize="10sp"
         android:gravity="center"
         android:background="@drawable/background_count_indicator"
