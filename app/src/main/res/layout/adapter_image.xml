@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
     <TextView
         android:id="@+id/counterView"
+        android:visibility="gone"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:text="✓"

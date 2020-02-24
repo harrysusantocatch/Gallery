@@ -9,11 +9,11 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.book.gallery.Extension.saveContextImages
 import com.book.gallery.R
 import com.book.gallery.adapter.ImageAdapter
 import com.book.gallery.adapter.ListFolderAdapter
 import com.book.gallery.model.Folder
-import com.book.gallery.model.SelectedImages
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : Activity(),
@@ -23,7 +23,7 @@ View.OnClickListener{
     private var folders = arrayListOf<Folder>()
     private lateinit var folderAdapter: ListFolderAdapter
     private lateinit var imageAdapter: ImageAdapter
-    private lateinit var selectedImages: SelectedImages
+    private lateinit var selectedGalleryImages: ArrayList<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ View.OnClickListener{
             for (position in positions.keys){
                 imagesUri.add(images[position])
             }
-            selectedImages = SelectedImages(imagesUri)
+            selectedGalleryImages = imagesUri
         }else{
             footer.visibility = View.GONE
             btnSave.visibility = View.GONE
@@ -105,7 +105,7 @@ View.OnClickListener{
 
     private fun saveSelectedImage() {
         val intent = Intent(this, SelectedImageActivity::class.java)
-        intent.putExtra("imagesUri", selectedImages)
+        this.saveContextImages(selectedGalleryImages)
         startActivity(intent)
     }
 
